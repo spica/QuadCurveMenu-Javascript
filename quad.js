@@ -1,165 +1,194 @@
-$(document).ready(function(){
-	var windowHeight = window.innerHeight;
-	var windowWidth = window.innerWidth;
-	$('.quad_main_btn').css('top', windowHeight/2).css('left', windowWidth/2);
-	$('.quad_item_btn').css('top', windowHeight/2).css('left', windowWidth/2 + 40);
-
-	$('.quad_item_btn').bind('click', function(){
-		var left = parseInt($(this).css('left')) + 20;
-		console.log(left);
-	//	$(this).css('left', left + 20);
-	//	$(this).css('-webkit-transition', 'all 2s ease-out');
-		$(this).animate({"left" : "+=50px", "top" : "+=50px"}, 500, function(){
-			$(this).animate({"left" : "-=20px", "top": "-=20px"}, 500, function() {
-				$(this).animate({"left" :"+=10px", "top": "+=10px"}, 500, function() { 
-					console.log('finish!');
-				});
-			});
-		});
-
-		$('.quad_main_btn').animate({"left" : "+=50px", "top" : "+=50px"}, 700, function(){
-			$('.quad_main_btn').animate({"left" : "-=20px", "top": "-=20px"}, 700, function() {
-				$('.quad_main_btn').animate({"left" :"+=10px", "top": "+=10px"}, 700, function() { 
-					console.log('finish!');
-				});
-			});
-		});
-	});
-});
-
-
 (function(window, document, undefined) {
-	var h;
 
-	var QuadCurveMenuItem = function(
-	
+	var QuadCurveMenuItem = function(img, id, bindFunc) {
+		var self = this; 
 
-	window.QuadCurveMenuItem = QuadCurveMenuItem;
-})(window, document)
+		this.attributes = {
+			id: 'quad_curve_menu_item',
+			image: 'test.png',
+			startPoint: {'x' : 0, 'y': 0},
+			endPoint: {'x' :0, 'y' : 0},
+			menuId: '',
+			nearPoint: {'x' : 0, 'y': 0},
+			farPoint: {'x' : 0, 'y': 0}
+		};
 
+		this.itemContainer;
 
-(function(window, document, undefined) {
-	var h; // helper
+		this.bind_func;
 
-	var QuadCurveMenu = function(id, options, values) {
-		var self = this, 
-					init,
-					touchesBegan,
-					quadCurveMenuItemTouchesBegan,
-					quadCurveMenuItemTouchesEnd,
-					setMenusArray,
-					_setMenu,
-					setExpanding,
-					_expand,
-					_close,
-					_blowupAnimationAtPoint,
-					_shrinkAnimationAtPoint;
-		this.menuContainer = document.getElementById(id);
-		var menus = [];
-		var attributes = {
+		this.init = function(img, id, bindFunc) {
+			// initialize function
+			if (img != undefined) this.attributes['image'] = img;
+			if (id != undefined) {
+				this.attributes['id'] = id;
+			}
+			if (bindFunc != undefined) {
+				this.bind_func = bindFunc;
+			} else {
+				this.bind_func = function () {
+					alert('You clicked item!');
+				}
+			}
+			
+			var item = '<img src="' + img + '" id="' + this.attributes['id'] + '" style="position:absolute; opacity:0;">';
+			$('body').append(item);
+			this.itemContainer = $('#' + this.attributes['id']);
+
+			this.itemContainer.css('z-index', 10000);
+			
+			this.itemContainer.bind('click', function(){
+					self.bindingFunc();
+			});
+		};
+
+		this.bindingFunc = function() {
+					var target = $('#'+ this.attributes['menuId']);
+					this.bind_func(target);
+		}
+
+		this.setStartPnt = function(startPnt) {
+			this.attributes['startPoint'] = startPnt;
+			this.itemContainer.css('top', this.attributes['startPoint']['y']);
+			this.itemContainer.css('left', this.attributes['startPoint']['x']);
+		};
+
+		this.setEndPnt = function(endPnt) {
+			this.attributes['endPoint'] = endPnt;
+		};
+
+		this.expand = function(duration, easing) {
+			this.itemContainer.show();
+			this.itemContainer.animate({"left" : this.attributes['endPoint']['x'] , "top" : this.attributes['endPoint']['y'], "opacity": 1}, duration, easing);
+		};
+
+		this.close = function(duration, easing) {
+			this.itemContainer.animate({"left" : this.attributes['startPoint']['x'] , "top" : this.attributes['startPoint']['y'], "opacity": 0}, duration, easing);
+			this.itemContainer.hide(duration);
+		};
+
+		this.init(img, id, bindFunc);
+	};
+
+	var QuadCurveMenu = function(id, options, menus) {
+		var self = this; 
+
+		this.menuContainer;
+
+		this.menus = [];
+
+		this.attributes;
+
+		this.closeButtonContainer;
+
+		this.defaults = {
+			id: 'quad_curve_menu',
 			image:					'default_img.png',
 			highlightedImage:	    'highlighted_img.png',
 			contentImage:			'content_img.png',
 			highlightedContentImage:'highlightedcontent_img.png',
-			// 
 			nearRadius:				100,
-			endRadius:				110,
+			endRadius:				100,
 			farRadius:				120,
 			startPoint:				{x: 100, y:100},
 			timeOffset:				0.01,
+			expandDuration:			500,
+			closeDuration: 			300,
+			easing:					'easeOutBack',
 			rotateAngle:			Math.PI,
-			menuWholeAngle:			Math.PI,
+			menuWholeAngle:			2 * Math.PI / 3,
+			closeButtonImg:			'quad_curve_close_button.png',
+			closeButtonId:    		'quad_curve_menu_close',
+			closeButtonEndPoint: 	{x: 0, y:0},
 			expanding:				false
-		}; 
-					
+		};
 
+		this.init = function(id, options, menus) {
+			this.attributes = $.extend(this.defaults, options);
+			if (id != undefined) { 
+				this.attributes['id'] = id;
+				this.attributes['closeButtonId'] = this.attributes['id'] + '_close';
+			}
+			this.menus = menus;
+			this.menuContainer = $('#' + this.attributes['id']);
+	
+			this.menuContainer.bind('click', function() {
+				self.setClick();
+			});
 
+			var closeButton = '<span id="' + this.attributes['closeButtonId'] + '" style="position:absolute; opacity:0; cursor: pointer;">x</span>';
+			$('body').append(closeButton);
+
+			$('#' + this.attributes['closeButtonId']).bind('click', function(){
+				self._close();
+			});
+
+			this.menuContainer.css('cursor', 'pointer').css('color', '#2B4CCF');
+		};
+
+		this._setMenu = function() {
+			var	startY = this.menuContainer.offset()['top'] - this.menuContainer.height() / 2;
+			var startX = this.menuContainer.offset()['left'] + this.menuContainer.width() / 2;
+			var startPnt = {'x' : startX, 'y': startY};
+			this.attributes['startPoint'] = startPnt;
+			var count = this.menus.length;
+			for (var i=0; i<count; i++) {
+				var item = this.menus[i];
+				item.setStartPnt(startPnt);
+				item.attributes['menuId'] = this.attributes['id'];
+				item.attributes['endPoint']['x'] = parseInt(startX) + this.attributes['endRadius'] * Math.sin(i * this.attributes['menuWholeAngle'] / count);
+				var endY = parseInt(startY) - this.attributes['endRadius'] * Math.cos(i * this.attributes['menuWholeAngle'] / count);
+				item.attributes['endPoint']['y'] = endY;
+			}
+			// close Button 수정. 
+			$('#'+this.attributes['closeButtonId']).css('top', startY).css('left', startX);
+			this.attributes['closeButtonEndPoint']['x'] = parseInt(startX) + 1.4 *  this.attributes['endRadius'] * Math.sin(this.attributes['menuWholeAngle'] / 2);		
+			this.attributes['closeButtonEndPoint']['y'] = parseInt(startY) - 1.4 *  this.attributes['endRadius'] * Math.cos(this.attributes['menuWholeAngle'] / 2);		
+		};
+
+		this.isExpanding = function() {
+			return this.attributes['expanding'];
+		};	
+
+		this._expand = function() {
+			if (!this.isExpanding()) {
+				var count = this.menus.length;
+				for (var i=0; i<count; i++) {
+					var item = this.menus[i];
+					item.expand(this.attributes['expandDuration'], this.attributes['easing']);
+				}
+				$('#'+this.attributes['closeButtonId']).show();
+				$('#'+this.attributes['closeButtonId']).animate({"left" : this.attributes['closeButtonEndPoint']['x'] , "top" : this.attributes['closeButtonEndPoint']['y'], "opacity": 1}, this.attributes['expandDuration'], this.attributes['easing']);
+				this.attributes['expanding'] = true;
+			}
+		};
+
+		this._close = function() {
+			if (this.isExpanding()) {
+				var count = this.menus.length;
+				for (var i=0; i<count; i++) {
+					var item = this.menus[i];
+					item.close(this.attributes['closeDuration']);
+				}
+				$('#'+this.attributes['closeButtonId']).animate({"left" : this.attributes['startPoint']['x'] , "top" : this.attributes['startPoint']['y'], "opacity": 0}, this.attributes['closeDuration']);
+				$('#'+this.attributes['closeButtonId']).hide(this.attributes['closeDuration']);
+				this.attributes['expanding'] = false;
+			}
+		};
+
+		this.setClick = function() {
+			if (!this.isExpanding()) {
+				self._setMenu();
+				self._expand();
+			} else {
+				self._close();
+			}
+		};
+				
+		this.init(id, options, menus);
 	}; 
 
-
-h = {
-    /*
-    * Cross browser getElementsByClassName, which uses native
-    * if it exists. Modified version of Dustin Diaz function:
-    * http://www.dustindiaz.com/getelementsbyclass
-    */
-    getByClass: (function() {
-        if (document.getElementsByClassName) {
-            return function(searchClass,node,single) {
-                if (single) {
-                    return node.getElementsByClassName(searchClass)[0];
-                } else {
-                    return node.getElementsByClassName(searchClass);
-                }
-            };
-        } else {
-            return function(searchClass,node,single) {
-                var classElements = [],
-                    tag = '*';
-                if (node == null) {
-                    node = document;
-                }
-                var els = node.getElementsByTagName(tag);
-                var elsLen = els.length;
-                var pattern = new RegExp("(^|\\s)"+searchClass+"(\\s|$)");
-                for (var i = 0, j = 0; i < elsLen; i++) {
-                    if ( pattern.test(els[i].className) ) {
-                        if (single) {
-                            return els[i];
-                        } else {
-                            classElements[j] = els[i];
-                            j++;
-                        }
-                    }
-                }
-                return classElements;
-            };
-        }
-    })(),
-    /* (elm, 'event' callback) Source: http://net.tutsplus.com/tutorials/javascript-ajax/javascript-from-null-cross-browser-event-binding/ */
-    addEvent: (function( window, document ) {
-        if ( document.addEventListener ) {
-            return function( elem, type, cb ) {
-                if ((elem && !(elem instanceof Array) && !elem.length && !h.isNodeList(elem) && (elem.length !== 0)) || elem === window ) {
-                    elem.addEventListener(type, cb, false );
-                } else if ( elem && elem[0] !== undefined ) {
-                    var len = elem.length;
-                    for ( var i = 0; i < len; i++ ) {
-                        h.addEvent(elem[i], type, cb);
-                    }
-                }
-            };
-        }
-        else if ( document.attachEvent ) {
-            return function ( elem, type, cb ) {
-                if ((elem && !(elem instanceof Array) && !elem.length && !h.isNodeList(elem) && (elem.length !== 0)) || elem === window ) {
-                    elem.attachEvent( 'on' + type, function() { return cb.call(elem, window.event); } );
-                } else if ( elem && elem[0] !== undefined ) {
-                    var len = elem.length;
-                    for ( var i = 0; i < len; i++ ) {
-                        h.addEvent( elem[i], type, cb );
-                    }
-                }
-            };
-        }
-    })(this, document),
-    /* (elm, attribute) Source: http://stackoverflow.com/questions/3755227/cross-browser-javascript-getattribute-method */
-    getAttribute: function(ele, attr) {
-        var result = (ele.getAttribute && ele.getAttribute(attr)) || null;
-        if( !result ) {
-            var attrs = ele.attributes;
-            var length = attrs.length;
-            for(var i = 0; i < length; i++) {
-                if (attr[i] !== undefined) {
-                    if(attr[i].nodeName === attr) {
-                        result = attr[i].nodeValue;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-};
-
+	window.QuadCurveMenuItem = QuadCurveMenuItem;
+	window.QuadCurveMenu = QuadCurveMenu;
 
 })(window, document)
