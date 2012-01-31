@@ -90,7 +90,7 @@
 			nearRadius:				100,
 			endRadius:				100,
 			farRadius:				120,
-			startPoint:				{x: 100, y:100},
+			startPoint:				{x: -1, y:0},
 			timeOffset:				0.01,
 			expandDuration:			500,
 			closeDuration: 			300,
@@ -133,13 +133,21 @@
 			});
 
 			this.menuContainer.css('cursor', 'pointer').css('color', '#2B4CCF');
+
+			if (this.attributes['startPoint']['x'] == -1)
+			{
+				var	startY = this.menuContainer.offset()['top'] - this.menuContainer.height() / 2;
+				var startX = this.menuContainer.offset()['left'] + this.menuContainer.width() / 2;
+				var startPnt = {'x' : startX, 'y': startY};
+				this.attributes['startPoint'] = startPnt;
+			}
+
 		};
 
 		this._setMenu = function() {
-			var	startY = this.menuContainer.offset()['top'] - this.menuContainer.height() / 2;
-			var startX = this.menuContainer.offset()['left'] + this.menuContainer.width() / 2;
-			var startPnt = {'x' : startX, 'y': startY};
-			this.attributes['startPoint'] = startPnt;
+			var startPnt = this.attributes['startPoint'];
+			var startX = startPnt['x'];
+			var startY = startPnt['y'];
 			var count = this.menus.length;
 			for (var i=0; i<count; i++) {
 				var item = this.menus[i];
