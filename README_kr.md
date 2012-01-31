@@ -12,24 +12,29 @@ QuadCurveMenuItem은 해당 item으로 쓸 이미지 파일 경로, 아이디값
 QuadCurveMenu는 인자로 아이디값, 각종 옵션, 그리고 QuadCurveMenuItem객체의 리스트를 인자로 받습니다. 
 아이디 값은 QuadCurveMenu를 적용시킬 html element의 id값이며, 
 옵션은 현재 
-var default_options = {
-			endRadius:			100,
-			startPoint:			{x: 100, y:100},
-			timeOffset:			0.01,
-			expandDuration:			500,
-			closeDuration: 			300,
-			easing:				'easeOutBack', //jquery.easing plugin 필요
-			rotateAngle:			Math.PI,
-			menuWholeAngle:			2 * Math.PI / 3,
-			closeButtonImg:			''
-			}
-이 기본값이며, 수정하고 싶을땐 
 
-var options = {
+	var default_options = {
+		endRadius:			100,
+		startPoint:			{x: 100, y:100},
+		timeOffset:			0.01,
+		expandDuration:			500,
+		closeDuration: 			300,
+		easing:				'easeOutBack', //jquery.easing plugin 필요
+		rotateAngle:			Math.PI,
+		menuWholeAngle:			2 * Math.PI / 3,
+		closeButtonImg:			''
+	}
+
+
+	이 기본값이며, 수정하고 싶을땐 
+
+	var options = {
 		endRadius: 150,
 		expandDuration: 300,
 		closeButtonImg:	'../images/close_button.png'
-		}
+	}
+
+
 처럼 수정하고 싶은 부분만 옵션값으로 주시면 됩니다. closeButtonImg옵션 값이 없을 경우에는 x 텍스트로 들어갑니다. 
 
 
