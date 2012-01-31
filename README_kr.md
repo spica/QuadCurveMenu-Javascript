@@ -1,5 +1,5 @@
 QuadCurveMenu-Javascript는 
-levey의 QuadCurveMenu (https://github.com/levey/QuadCurveMenu)를 자바스크립트 버젼으로 포팅한 겁니다. 
+levey의 QuadCurveMenu (https://github.com/levey/QuadCurveMenu/) 를 자바스크립트 버젼으로 포팅한 겁니다. 
 
 QuadCurveMenuItem 클래스와 QuadCurveMenu 클래스를 제공합니다.
 
