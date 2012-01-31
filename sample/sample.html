@@ -112,6 +112,19 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+
+	var options = {
+			endRadius:				100,
+			startPoint:				{x: 100, y:100},
+			timeOffset:				0.01,
+			expandDuration:			500,
+			closeDuration: 			300,
+			easing:					'easeOutBack', //jquery.easing plugin 필요
+			rotateAngle:			Math.PI,
+			menuWholeAngle:			2 * Math.PI / 3
+		//	closeButtonImg:			'../images/quad_curve_close_button.png'
+			}
+
 	var bind_func = function(target) {
 		alert(target.html());
 	}
@@ -131,7 +144,7 @@ $(document).ready(function() {
 	//함수 바인딩
 	$('.dynamic_search').each(function() {
 		var id = $(this).attr('id');
-		new QuadCurveMenu(id, {}, menus);
+		new QuadCurveMenu(id, options, menus);
 	});
 
 });

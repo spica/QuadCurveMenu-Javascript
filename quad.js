@@ -97,7 +97,7 @@
 			easing:					'easeOutBack',
 			rotateAngle:			Math.PI,
 			menuWholeAngle:			2 * Math.PI / 3,
-			closeButtonImg:			'quad_curve_close_button.png',
+			closeButtonImg:			'',
 			closeButtonId:    		'quad_curve_menu_close',
 			closeButtonEndPoint: 	{x: 0, y:0},
 			expanding:				false
@@ -116,7 +116,16 @@
 				self.setClick();
 			});
 
-			var closeButton = '<span id="' + this.attributes['closeButtonId'] + '" style="position:absolute; opacity:0; cursor: pointer;">x</span>';
+			var closeButton;
+			
+			if (this.attributes['closeButtonImg'] == '')
+			{
+				closeButton = '<span id="' + this.attributes['closeButtonId'] + '" style="position:absolute; opacity:0; cursor: pointer;">x</span>';
+			} else {
+				closeButton = '<img id="' + this.attributes['closeButtonId'] + '" src="' + this.attributes['closeButtonImg'] + '" style="position:absolute; opacity:0; cursor:pointer;">';
+			}
+			//var closeButton = '<span id="' + this.attributes['closeButtonId'] + '" style="position:absolute; opacity:0; cursor: pointer;">x</span>';
+			
 			$('body').append(closeButton);
 
 			$('#' + this.attributes['closeButtonId']).bind('click', function(){
