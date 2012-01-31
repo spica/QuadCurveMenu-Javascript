@@ -26,8 +26,8 @@
 			if (bindFunc != undefined) {
 				this.bind_func = bindFunc;
 			} else {
-				this.bind_func = function () {
-					alert('You clicked item!');
+				this.bind_func = function (target) {
+					alert('InnerHtml of this item\'s menu is ' + target.html());
 				}
 			}
 			
@@ -43,8 +43,8 @@
 		};
 
 		this.bindingFunc = function() {
-					var target = $('#'+ this.attributes['menuId']);
-					this.bind_func(target);
+			var target = $('#'+ this.attributes['menuId']);
+			this.bind_func(target);
 		}
 
 		this.setStartPnt = function(startPnt) {

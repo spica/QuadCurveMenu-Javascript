@@ -15,7 +15,7 @@ QuadCurveMenu는 인자로 아이디값, 각종 옵션, 그리고 QuadCurveMenuI
 
 	var default_options = {
 		endRadius:			100,
-		startPoint:			{x: 100, y:100},
+		startPoint:			{x: -1, y:0},
 		timeOffset:			0.01,
 		expandDuration:			500,
 		closeDuration: 			300,
@@ -60,7 +60,6 @@ QuadCurveMenu는 인자로 아이디값, 각종 옵션, 그리고 QuadCurveMenuI
 
 	var options = {
 			endRadius:				100,
-			startPoint:				{x: 100, y:100},
 			timeOffset:				0.01,
 			expandDuration:			500,
 			closeDuration: 			300,
