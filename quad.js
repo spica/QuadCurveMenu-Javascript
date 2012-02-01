@@ -31,7 +31,7 @@
 				}
 			}
 			
-			var item = '<img src="' + img + '" id="' + this.attributes['id'] + '" style="position:absolute; opacity:0;">';
+			var item = '<img src="' + img + '" id="' + this.attributes['id'] + '" style="position:absolute; opacity:0; cursor: pointer;">';
 			$('body').append(item);
 			this.itemContainer = $('#' + this.attributes['id']);
 
