@@ -111,46 +111,41 @@
 </div>
 
 <script type="text/javascript">
-$(document).ready(function() {
+	window.onload = makeQuadCurve;
+	function makeQuadCurve() {
+		var bind_func = function(target) {
+			alert(target.html());
+		}
+		var searchItem = {imgSrc: '../images/search_big.png', bindFunc: bind_func};
+		var imageItem = {imgSrc: '../images/image_big.png', bindFunc: bind_func};
+		var shoppingItem = {imgSrc: '../images/shopping_big.png', bindFunc: bind_func};
+	//	var mapItem = new QuadCurveMenuItem('/images/map_big.png', 'map_item', bind_func);
+	//	var blogItem = new QuadCurveMenuItem('/images/blog_big.png', 'blog_item', bind_func);
+		var menus = new Array();
 
-
-	var bind_func = function(target) {
-		alert(target.html());
-	}
-	var searchItem = {imgSrc: '../images/search_big.png', bindFunc: bind_func};
-	var imageItem = {imgSrc: '../images/image_big.png', bindFunc: bind_func};
-	var shoppingItem = {imgSrc: '../images/shopping_big.png', bindFunc: bind_func};
-//	var mapItem = new QuadCurveMenuItem('/images/map_big.png', 'map_item', bind_func);
-//	var blogItem = new QuadCurveMenuItem('/images/blog_big.png', 'blog_item', bind_func);
-	var menus = new Array();
-
-	menus.push(searchItem);
-	menus.push(imageItem);
-	menus.push(shoppingItem);
-//	menus.push(mapItem);
-//	menus.push(blogItem);
-	
-	var options = {
-			endRadius:				100,
-			timeOffset:				0.01,
-			expandDuration:			500,
-			closeDuration: 			300,
-			easing:					'easeOutBack', //jquery.easing plugin 필요
-			rotateAngle:			Math.PI,
-			menuWholeAngle:			2 * Math.PI / 3,
-		//	closeButtonImg:			'../images/quad_curve_close_button.png'
-			menuItemOptions: menus
+		menus.push(searchItem);
+		menus.push(imageItem);
+		menus.push(shoppingItem);
+	//	menus.push(mapItem);
+	//	menus.push(blogItem);
+		
+		var options = {
+				endRadius:				100,
+				expandDuration:			500,
+				closeDuration: 			300,
+				rotateAngle:			Math.PI,
+				menuWholeAngle:			2 * Math.PI / 3,
+			//	closeButtonImg:			'../images/quad_curve_close_button.png'
+				menuItemOptions: menus
 			}
-	//함수 바인딩
-	$('.dynamic_search').each(function() {
-		var id = $(this).attr('id');
-		var menu_container = document.getElementById(id);
-		new QuadCurveMenu(options).quadcurve(menu_container);
-	});
-
-});
-
-
+		//함수 바인딩
+		var elements = document.getElementsByClassName('dynamic_search')
+		for(var i=0; i<elements.length; i++) {
+			var ele = elements.item(i);
+			var menu_container = document.getElementById(ele.id);
+			new QuadCurveMenu(options).quadcurve(menu_container);
+		}
+	}
 </script>
 
 	</div>

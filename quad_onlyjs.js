@@ -1,82 +1,57 @@
 (function(window, document, undefined) {
 
   /**
-   * Utility function to create elements. If no tag name is given,
-   * a DIV is created. Optionally properties can be passed.
-   */
-  function createEl(tag, prop) {
-    var el = document.createElement(tag || 'div');
-    var n;
-
-    for(n in prop) {
-      el[n] = prop[n];
-		}
-
-    return el;
-  }
-
-  /**
-   * Appends children and returns the parent.
-   */
-  function insertChild(parent /* child1, child2, ...*/) {
-    for (var i=1, n=arguments.length; i<n; i++) {
-      parent.appendChild(arguments[i]);
-    }
-    return parent;
-  }
-
-  /**
-   * Sets multiple style properties at once.
-   */
-  function css(el, prop) {
-    for (var n in prop) {
-      el.style[vendor(el, n)||n] = prop[n];
-    }
-    return el;
-  }
-
-  /**
    * Fills in default values.
    */
   function merge(obj) {
     for (var i=1; i < arguments.length; i++) {
       var def = arguments[i];
       for (var n in def) {
-        if (obj[n] === undefined) obj[n] = def[n];
+        obj[n] = def[n];
       }
     }
     return obj;
   }
-		function quadCurveAnimation(target, endPointX, endPointY, duration, isExpanding) {
-			console.log('endpoint x =');
-			console.log(endPointX);
-			console.log('endpoint y = ');
-			console.log(endPointY);
-			offsetX = endPointX - parseFloat(target.style.left); 
-			offsetY = endPointY - parseFloat(target.style.top);
-			var dOpacity = -0.01;
-			if (isExpanding) {
-				target.style.display = 'block';
-				dOpacity = 0.01;
-			}
-			var i=0;	
-			function doMove(target, offsetX, offsetY, dOpacity, timeout) {
+
+	/*
+	 * QuadCurveMenu Animation function 
+	 * target : js dom object. target object of animation 
+	 * endPointX : absolute coordinate of destination's x 
+	 * endPointY : absolute coordinate of destination's y
+	 * duration : animation duration 
+	 * isExpanding : boolean. true if expand animation 
+	 */
+	function quadCurveAnimation(target, endPointX, endPointY, duration, isExpanding) {
+		offsetX = endPointX - parseFloat(target.style.left); 
+		offsetY = endPointY - parseFloat(target.style.top);
+		var frame = 100;
+		var dOpacity = -(1.0 / frame);
+		if (isExpanding) {
+			target.style.display = 'block';
+			dOpacity = 1.0 / frame;
+		}
+		function doMove(target, offsetX, offsetY, dOpacity, frame, timeout) {
+			setTimeout( function() {
+				target.style.opacity = parseFloat(target.style.opacity) + dOpacity;
+				target.style.top = (parseFloat(target.style.top) + offsetY / frame) + 'px';
+				target.style.left = (parseFloat(target.style.left) + offsetX / frame) + 'px';
+			}, timeout);
+		};
+		//doMove(0);
+		var time = 0;
+		var i=0;	
+		while(i++<frame) {
+				time += duration / frame
+				doMove(target, offsetX, offsetY, dOpacity, frame, time);	
+		}
+		if (!isExpanding) {
+			function disappear(target, timeout) {
 				setTimeout( function() {
-					target.style.opacity = parseFloat(target.style.opacity) + dOpacity;
-					target.style.top = (parseFloat(target.style.top) + offsetY / 100) + 'px';
-					target.style.left = (parseFloat(target.style.left) + offsetX / 100) + 'px';
+					target.style.display = 'none';
 				}, timeout);
-			};
-			//doMove(0);
-			var time = 0;
-			while(i++<100) {
-					time += duration / 100
-					doMove(target, offsetX, offsetY, dOpacity, time);	
 			}
-			if (!isExpanding) {
-				console.log('disappear');
-				target.style.display = 'none';
-			}
+			disappear(target, time);
+		}
 	}
 
 
@@ -84,14 +59,14 @@
 		var self = this; 
 
 		this.attributes = {
-			id: 'quad_curve_menu_item',
+		//	id: 'quad_curve_menu_item',
 			imageSrc: 'test.png',
 			startPoint: {'x' : 0, 'y': 0},
 			endPoint: {'x' :0, 'y' : 0},
 			menuId: '',
 			nearPoint: {'x' : 0, 'y': 0},
 			farPoint: {'x' : 0, 'y': 0},
-			bindFunc: function() {console.log('zz');}, // 되려나..
+			bindFunc: function(target) {console.log(target);}, // 되려나..
 			target: ''
 		};
 
@@ -113,7 +88,8 @@
 			item.style.opacity = 0;
 			item.style.cursor = 'pointer';
 			item.src = self.attributes['imageSrc'];
-			item.onclick = self.attributes['bindFunc'];
+			//item.onclick = self.attributes['bindFunc'];
+			item.onclick = function() { self.attributes['bindFunc'](item);};
 			self.itemContainer = item;  
 		};
 
@@ -142,7 +118,7 @@
 		};
 
 		this.close = function(duration) {
-			quadCurveAnimation(self.itemContainer, this.attributes['startPoint']['x'], this.attributes['startPoint']['y'], duration, false);
+			quadCurveAnimation(self.itemContainer, self.attributes['startPoint']['x'], self.attributes['startPoint']['y'], duration, false);
 		};
 
 		this.init(options);
@@ -160,19 +136,13 @@
 		this.closeButtonContainer;
 
 		this.defaults = {
-			id: 'quad_curve_menu',
-			image:					'default_img.png',
-			highlightedImage:	    'highlighted_img.png',
-			contentImage:			'content_img.png',
-			highlightedContentImage:'highlightedcontent_img.png',
 			nearRadius:				100,
 			endRadius:				100,
 			farRadius:				120,
 			startPoint:				{x: -1, y:0},
 			timeOffset:				0.01,
-			expandDuration:			500,
+			expandDuration:			300,
 			closeDuration: 			300,
-			easing:					'easeOutBack',
 			rotateAngle:			Math.PI,
 			menuWholeAngle:			2 * Math.PI / 3,
 			closeButtonImgSrc:			'',
@@ -184,7 +154,7 @@
 		};
 
 		this.init = function(options) {
-			self.attributes = $.extend(this.defaults, options);
+			this.attributes = merge(this.defaults, options);
 		};
 
 		this.quadcurve = function(target) {
@@ -222,9 +192,10 @@
 				closeButtonImg.src = self.attributes['closeButtonImgSrc'];
 				closeButton.appendChild(closeButtonImg);
 			}
-			this.closeButtonContainer = closeButton;
+			self.closeButtonContainer = closeButton;
 
-			this.menuContainer.appendChild(closeButton);
+			//this.menuContainer.appendChild(closeButton); 이걸로하면 close가 아니라 setclick + close가 불려....-_-;;;
+			document.body.appendChild(closeButton);
 
 			self._setMenu();
 		};
@@ -244,27 +215,31 @@
 				item.setEndPnt(endPnt);
 				self.attributes.menuItems.push(item);
 			}
-			console.log(self.attributes.menuItems);
 			// close Button 수정. 
 			self.closeButtonContainer.style.top = startY + 'px';
 			self.closeButtonContainer.style.left = startX + 'px';
-			this.attributes['closeButtonEndPoint']['x'] = parseInt(startX) + 1.4 *  this.attributes['endRadius'] * Math.sin(this.attributes['menuWholeAngle'] / 2);		
-			this.attributes['closeButtonEndPoint']['y'] = parseInt(startY) - 1.4 *  this.attributes['endRadius'] * Math.cos(this.attributes['menuWholeAngle'] / 2);		
+			self.attributes['closeButtonEndPoint']['x'] = parseInt(startX) + 1.5 *  this.attributes['endRadius'] * Math.sin(this.attributes['menuWholeAngle'] / 2);		
+			self.attributes['closeButtonEndPoint']['y'] = parseInt(startY) - 1.5 *  this.attributes['endRadius'] * Math.cos(this.attributes['menuWholeAngle'] / 2);		
 		};
 
 		this.isExpanding = function() {
-			return this.attributes['expanding'];
+			return self.attributes['expanding'];
 		};	
 
+		this.setExpanding = function(isExpanding) {
+			self.attributes['expanding'] = isExpanding;
+		}
+
 		this._expand = function() {
-			if (!this.isExpanding()) {
-				var count = this.attributes.menuItems.length;
+			if (!self.isExpanding()) {
+				var count = self.attributes.menuItems.length;
 				for (var i=0; i<count; i++) {
-					var item = this.attributes.menuItems[i];
-					item.expand(this.attributes['expandDuration']);
+					var item = self.attributes.menuItems[i];
+					item.expand(self.attributes['expandDuration']);
 				}
-				quadCurveAnimation(self.closeButtonContainer, this.attributes['closeButtonEndPoint']['x'], this.attributes['closeButtonEndPoint']['y'], this.attributes['expandDuration'], true);
-				this.attributes['expanding'] = true;
+				quadCurveAnimation(self.closeButtonContainer, self.attributes['closeButtonEndPoint']['x'], self.attributes['closeButtonEndPoint']['y'], self.attributes['expandDuration'], true);
+				//self.attributes['expanding'] = true;
+				self.setExpanding(true);
 			}
 		};
 
@@ -275,14 +250,14 @@
 					var item = self.attributes.menuItems[i];
 					item.close(self.attributes['closeDuration']);
 				}
-				quadCurveAnimation(self.closeButtonContainer, this.attributes['startPoint']['x'], this.attributes['startPoint']['y'], this.attributes['expandDuration'], false);
-				this.attributes['expanding'] = false;
+				quadCurveAnimation(self.closeButtonContainer, self.attributes['startPoint']['x'], self.attributes['startPoint']['y'], self.attributes['expandDuration'], false);
+				//self.attributes['expanding'] = false;
+				self.setExpanding(false);
 			}
 		};
 
 		this.setClick = function() {
 			if (!self.isExpanding()) {
-				//self._setMenu();
 				self._expand();
 			} else {
 				self._close();
