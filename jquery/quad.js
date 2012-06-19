@@ -77,7 +77,8 @@
 		};
 
 		this.setTargetMenu = function(target) {
-			target.append(self.itemContainer);
+			//target.append(self.itemContainer);
+			$('body').append(self.itemContainer);
 		}
 
 		this.setStartPnt = function(x, y) {
