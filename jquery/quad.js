@@ -213,12 +213,12 @@
 			}
 			// close Button 수정. 
 			this.closeButtonContainer.css('top', startY).css('left', startX);
-			this.attributes['closeButtonEndPoint']['x'] = calQuadCoordinateX(startX, 1.3 *  this.attributes['endRadius'], this.attributes['menuWholeAngle'] / 2);		
-			this.attributes['closeButtonEndPoint']['y'] = calQuadCoordinateY(startY, 1.3 *  this.attributes['endRadius'], this.attributes['menuWholeAngle'] / 2);		
-			this.attributes['closeButtonNearPoint']['x'] = calQuadCoordinateX(startX, 1.3 *  this.attributes['nearRadius'], this.attributes['menuWholeAngle'] / 2);		
-			this.attributes['closeButtonNearPoint']['y'] = calQuadCoordinateY(startY, 1.3 *  this.attributes['nearRadius'], this.attributes['menuWholeAngle'] / 2);		
-			this.attributes['closeButtonFarPoint']['x'] = calQuadCoordinateX(startX, 1.3 *  this.attributes['farRadius'], this.attributes['menuWholeAngle'] / 2);		
-			this.attributes['closeButtonFarPoint']['y'] = calQuadCoordinateY(startY, 1.3 *  this.attributes['farRadius'], this.attributes['menuWholeAngle'] / 2);		
+			this.attributes['closeButtonEndPoint']['x'] = calQuadCoordinateX(startX, this.attributes['closeButtonRadius'], this.attributes['menuWholeAngle'] / 2);		
+			this.attributes['closeButtonEndPoint']['y'] = calQuadCoordinateY(startY, this.attributes['closeButtonRadius'], this.attributes['menuWholeAngle'] / 2);		
+			this.attributes['closeButtonNearPoint']['x'] = calQuadCoordinateX(startX, this.attributes['closeButtonRadius'], this.attributes['menuWholeAngle'] / 2);		
+			this.attributes['closeButtonNearPoint']['y'] = calQuadCoordinateY(startY, this.attributes['closeButtonRadius'], this.attributes['menuWholeAngle'] / 2);		
+			this.attributes['closeButtonFarPoint']['x'] = calQuadCoordinateX(startX, this.attributes['closeButtonRadius'], this.attributes['menuWholeAngle'] / 2);		
+			this.attributes['closeButtonFarPoint']['y'] = calQuadCoordinateY(startY, this.attributes['closeButtonRadius'], this.attributes['menuWholeAngle'] / 2);		
 		};
 
 		this.isExpanding = function() {
