@@ -1,43 +1,42 @@
+/**
+ * QuadCurveMenu-Javascript ver 0.0.1 
+ * Author : Myunkyu Park (spica@wafflestudio.com) 
+ * Git : https://github.com/spica/QuadCurveMenu-Javascript 
+ * Created at : 2012.06.21 
+ * Dependency : jQuery, jQuery-css-transform, jQuery-animate-css-rotate-scale 
+ */
 (function(window, document, undefined) {
 
+	// default css style for new item and menu
 	var default_style = {
 		position: 'absolute',
 		opacity: 0,
 		cursor: 'pointer',
-		zindex: 999
-	}
-
-	function dampedPendulemAnimation(target, farPoint, nearPoint, lastPoint, decay_time, k) {
-		var pow2 = Math.pow(2, k);
-		var duration = decay_time / pow2;
-		//console.log(pow2);
-		/*
-		
-		console.log(duration);
-		if (duration < 50) {
-			return setTimeout(function(){ target.animate({"left": lastPoint['x'], "top": lastPoint['y']});}, 50);
-		}
-
-		var offsetX, offsetY;
-
-		if (k % 2 == 0 ) {
-			// up 
-			offsetX = (farPoint['x'] - target.offset()['left']);
-			offsetY = (farPoint['y'] - target.offset()['top']);
-			//target.animate({"left" : target.offset()['left'] + offsetX, "top" : target.offset()['top'] + offsetY}, duration); 
-		} else {
-			offsetX = (nearPoint['x'] - target.offset()['left']);
-			offsetY = (nearPoint['y'] - target.offset()['top']);
-		}
-		target.animate({"left" : target.offset()['left'] + offsetX, "top" : target.offset()['top'] + offsetY}, duration, function(){
-			dampedPendulemAnimation(target, farPoint, nearPoint, lastPoint, decay_time, ++k); 
-		}); */ 
-
-		target.animate({"left" : farPoint['x'], "top": farPoint['y'], "opacity": 0.4}, duration * 0.4, function() { 
-			target.animate({"left" : nearPoint['x'], "top": nearPoint['y'], "opacity": 0.8}, duration * 0.4 , function() {
-					target.animate({"left" : lastPoint['x'], "top": lastPoint['y'], "opacity": 1}, duration * 0.2, 'easeOutBounce')
+		zindex: 999,
+	  display: 'none'
+	} 
+	
+	function quadCurveExpandAnimation(target, farPoint, nearPoint, lastPoint, duration, easing) {
+		target.show();
+		target.animate({"left" : farPoint['x'], "top": farPoint['y'], "opacity": 0.4, rotate: '+=180deg'}, duration * 0.4, function() { 
+			target.animate({"left" : nearPoint['x'], "top": nearPoint['y'], "opacity": 0.8, rotate: '+=180deg'}, duration * 0.4 , function() {
+					target.animate({"left" : lastPoint['x'], "top": lastPoint['y'], "opacity": 1}, duration * 0.2, easing)
 			})  
 		}); 
+	}
+
+	function quadCurveShrinkAnimation(target, endPoint, duration) {
+		target.animate({left: endPoint['x'], top: endPoint['y'], rotate: '+=360deg', opacity: 0}, duration, function() {
+			target.hide();	
+		});
+	}
+
+	function quadCurveBlowupAnimation(target, endPoint, duration) {
+		target.animate({scale: '1.4', opacity: 0}, duration, function(){
+			// move target to start position 
+			target.animate({scale: '1.0', left: endPoint['x'], top: endPoint['y']});
+			target.hide();
+		});
 	}
 
 	function calQuadCoordinateX(startX, radius, centerAngle) {
@@ -51,18 +50,17 @@
 		var self = this; 
 
 		this.defaults = {
-			id: 'quad_curve_menu_item',
 			image: 'test.png',
 			startPoint: {'x' : 0, 'y': 0},
 			endPoint: {'x' :0, 'y' : 0},
-			menuId: '',
 			nearPoint: {'x' : 0, 'y': 0},
 			farPoint: {'x' : 0, 'y': 0},
 			bindFunc: function(target) {console.log(target);},
-			target: ''
 		};
 
 		this.itemContainer;
+
+		this.menu;
 
 		this.init = function(options) {
 			this.attributes = $.extend(this.defaults, options);
@@ -72,13 +70,14 @@
 			this.itemContainer = item;
 			
 			this.itemContainer.bind('click', function(){
+				  self.blowUp(300);
 					self.attributes['bindFunc'](item);
 			});
 		};
 
-		this.setTargetMenu = function(target) {
-			//target.append(self.itemContainer);
-			$('body').append(self.itemContainer);
+		this.setTargetMenu = function(target, menu) {
+			target.parent().append(self.itemContainer);
+			this.menu = menu;
 		}
 
 		this.setStartPnt = function(x, y) {
@@ -103,14 +102,17 @@
 		}
 
 		this.expand = function(duration, easing) {
-			this.itemContainer.show();
-			dampedPendulemAnimation(this.itemContainer, this.attributes['farPoint'], this.attributes['nearPoint'], this.attributes['endPoint'], duration, 0);
+			quadCurveExpandAnimation(this.itemContainer, this.attributes['farPoint'], this.attributes['nearPoint'], this.attributes['endPoint'], duration, easing);
 		};
 
 		this.close = function(duration, easing) {
-			this.itemContainer.animate({"left" : this.attributes['startPoint']['x'] , "top" : this.attributes['startPoint']['y'], "opacity": 0}, duration, easing);
-			this.itemContainer.hide(duration);
+			quadCurveShrinkAnimation(this.itemContainer, this.attributes['startPoint'], duration);
 		};
+
+		this.blowUp = function(duration) {
+			quadCurveBlowupAnimation(this.itemContainer, this.attributes['startPoint'], duration);
+			this.menu._close();
+		}
 
 		this.init(options);
 	};
@@ -120,31 +122,23 @@
 
 		this.menuContainer;
 
-		this.menus = [];
-
 		this.attributes;
-
-		this.closeButtonContainer;
 
 		this.defaults = {
 			image:					'default_img.png',
 			highlightedImage:	    'highlighted_img.png',
 			contentImage:			'content_img.png',
 			highlightedContentImage:'highlightedcontent_img.png',
+			timeOffset: 	    50,
 			nearRadius:				80,
 			endRadius:				100,
 			farRadius:				120,
-			startPoint:				{x: -1, y:0},
+			startPoint:				{x: -1, y:-1},
 			expandDuration:			300,
 			closeDuration: 			300,
 			easing:					'easeOutBack',
-			rotateAngle:			Math.PI,
+			rotateAngle:			180,
 			menuWholeAngle:			2 * Math.PI / 3,
-			closeButtonImg:			'',
-			closeButtonId:    		'quad_curve_menu_close',
-			closeButtonEndPoint: 	{x: 0, y:0},
-			closeButtonNearPoint: 	{x: 0, y:0},
-			closeButtonFarPoint: 	{x: 0, y:0},
 			expanding:				false,
 			menuItemOptions: [],
 			menuItems:				[]
@@ -161,25 +155,7 @@
 				self.setClick();
 			});
 
-			var closeButton;
-			
-			if (this.attributes['closeButtonImg'] == '')
-			{
-				closeButton = $('<span />').css(default_style);
-				closeButton.html('x');
-			} else {
-				closeButton = $('<img />').css(default_style).attr('src', this.attributes['closeButtonImg']);
-			}
-
-			closeButton.bind('click', function() {
-				self._close();
-			});
-
-			this.menuContainer.append(closeButton);
-
-			this.closeButtonContainer = closeButton;
-
-			if (this.attributes['startPoint']['x'] == -1)
+			if (this.attributes['startPoint']['x'] == -1 && this.attributes['startPoint']['y'] == -1)
 			{
 				var	startY = this.menuContainer.offset()['top'] - this.menuContainer.height() / 2;
 				var startX = this.menuContainer.offset()['left'] + this.menuContainer.width() / 2;
@@ -198,7 +174,7 @@
 			var count = this.attributes.menuItemOptions.length;
 			for (var i=0; i<count; i++) {
 				var item = new QuadCurveMenuItem(this.attributes.menuItemOptions[i]);
-				item.setTargetMenu(this.menuContainer);
+				item.setTargetMenu(this.menuContainer, self);
 				item.setStartPnt(startX, startY);
 				var endX = calQuadCoordinateX(startX, this.attributes['endRadius'], i * this.attributes['menuWholeAngle'] / count);
 				var endY = calQuadCoordinateY(startY, this.attributes['endRadius'], i * this.attributes['menuWholeAngle'] / count);
@@ -212,14 +188,6 @@
 				item.setFarPnt(farX, farY);
 				this.attributes.menuItems.push(item);
 			}
-			// close Button 수정. 
-			this.closeButtonContainer.css('top', startY).css('left', startX);
-			this.attributes['closeButtonEndPoint']['x'] = calQuadCoordinateX(startX, this.attributes['closeButtonRadius'], this.attributes['menuWholeAngle'] / 2);		
-			this.attributes['closeButtonEndPoint']['y'] = calQuadCoordinateY(startY, this.attributes['closeButtonRadius'], this.attributes['menuWholeAngle'] / 2);		
-			this.attributes['closeButtonNearPoint']['x'] = calQuadCoordinateX(startX, this.attributes['closeButtonRadius'], this.attributes['menuWholeAngle'] / 2);		
-			this.attributes['closeButtonNearPoint']['y'] = calQuadCoordinateY(startY, this.attributes['closeButtonRadius'], this.attributes['menuWholeAngle'] / 2);		
-			this.attributes['closeButtonFarPoint']['x'] = calQuadCoordinateX(startX, this.attributes['closeButtonRadius'], this.attributes['menuWholeAngle'] / 2);		
-			this.attributes['closeButtonFarPoint']['y'] = calQuadCoordinateY(startY, this.attributes['closeButtonRadius'], this.attributes['menuWholeAngle'] / 2);		
 		};
 
 		this.isExpanding = function() {
@@ -228,35 +196,43 @@
 
 		this._expand = function() {
 			if (!this.isExpanding()) {
+				this.menuContainer.animate({rotate: '+=' + this.attributes['rotateAngle']});
 				var count = this.attributes.menuItems.length;
 				for (var i=0; i<count; i++) {
+					function item_expand(item, duration, easing, timeout) {
+						setTimeout( function() {
+							item.expand(duration, easing);
+						}, timeout);
+					}
 					var item = this.attributes.menuItems[i];
-					item.expand(this.attributes['expandDuration'], this.attributes['easing']);
+					item_expand(item, self.attributes['expandDuration'], self.attributes['easing'], i * this.attributes['timeOffset']);
 				}
-				this.closeButtonContainer.show();
-				dampedPendulemAnimation(this.closeButtonContainer, this.attributes['closeButtonFarPoint'], this.attributes['closeButtonNearPoint'], this.attributes['closeButtonEndPoint'], this.attributes['closeDuration'], 0);
 				this.attributes['expanding'] = true;
 			}
 		};
 
 		this._close = function() {
 			if (this.isExpanding()) {
+				this.menuContainer.animate({rotate: '-=' + this.attributes['rotateAngle']})
 				var count = this.attributes.menuItems.length;
 				for (var i=0; i<count; i++) {
+					function item_shrink(item, duration, timeout) {
+						setTimeout( function() {
+							item.close(duration);
+						}, timeout);
+					}
 					var item = this.attributes.menuItems[i];
-					item.close(this.attributes['closeDuration']);
+					item_shrink(item, self.attributes['closeDuration'], i * this.attributes['timeOffset']);
 				}
-				this.closeButtonContainer.animate({"left" : this.attributes['startPoint']['x'] , "top" : this.attributes['startPoint']['y'], "opacity": 0}, this.attributes['closeDuration']);
-				this.closeButtonContainer.hide(this.attributes['closeDuration']);
 				this.attributes['expanding'] = false;
 			}
 		};
 
 		this.setClick = function() {
-			if (!this.isExpanding()) {
-				self._expand();
-			} else {
+			if (this.isExpanding()) {
 				self._close();
+			} else {
+				self._expand();
 			}
 		};
 				
@@ -273,7 +249,6 @@ $.fn.quadcurve = function(opts){
 		var $this = $(this),
 				data = $this.data();
 		if (opts !== false && !data.quadcurve) {
-			console.log('new quadcurve');
 			data.quadcurve = new QuadCurveMenu(opts).quadcurve($this);
 		}
 	});

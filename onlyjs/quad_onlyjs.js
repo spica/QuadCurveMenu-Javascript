@@ -1,5 +1,11 @@
-(function(window, document, undefined) {
+/**
+ *	QuadCurveMenu Javascript Ver 0.0.1 
+ *  Author: Myunkyu Park (spica@wafflestudio.com)
+ *  Git: https://github.com/spica/QuadCurveMenu-Javascript 
+ *  Created at : 2012.06.21 
+ */
 
+(function(window, document, undefined) {
   /**
    * Fills in default values.
    */
@@ -28,14 +34,14 @@
   		}, timeout);
   	}
 
-  	function disappear(target, timeout) {
+  	function makeDisappear(target, timeout) {
   		setTimeout( function() {
   			target.style.display = 'none';
   		}, timeout);
   	}
 
-  	offsetX = endPointX - parseFloat(target.style.left); 
-  	offsetY = endPointY - parseFloat(target.style.top);
+  	var offsetX = endPointX - parseFloat(target.style.left); 
+  	var offsetY = endPointY - parseFloat(target.style.top);
   	var frame = 100; // frame of animation 
   	var dOpacity = -(1.0 / frame);
   	var timeoutms = 0; // milli seconds
@@ -48,7 +54,7 @@
   		target.style.display = 'block';
   		dOpacity = 1.0 / frame;
   	} else {
-  		disappear(target, duration + 50);
+  		makeDisappear(target, duration + 50);
   	}
 
   	//exec animation 
@@ -58,7 +64,7 @@
   	}
   }
 
-/** 
+	/** 
   * @constructor
   */
   function QuadCurveMenuItem(options) {
@@ -72,9 +78,9 @@
   		target: ''
   	};
 
-  	//this.attributes;
+  	this.attributes;
 
-  	//this.itemContainer;
+  	this.itemContainer;
 
   	this.init = function(options) {
   		// initialize function
@@ -91,7 +97,8 @@
   	};
 
   	this.setTargetMenu = function(target) {
-  		target.appendChild(self.itemContainer);
+  		//target.appendChild(self.itemContainer);
+			target.parentNode.appendChild(self.itemContainer);
   	}
 
   	this.setStartPnt = function(startPnt) {
