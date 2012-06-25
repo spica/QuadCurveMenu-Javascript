@@ -148,7 +148,7 @@
 			this.attributes = $.extend(this.defaults, options);
 		};
 
-		this.quadcurve = function(target) {
+		this.addQuadCurveMenu = function(target) {
 			this.menuContainer = target;
 	
 			this.menuContainer.bind('click', function() {
@@ -244,12 +244,12 @@
 
 })(window, document)
 
-$.fn.quadcurve = function(opts){
+$.fn.addQuadCurveMenu = function(opts){
 	this.each(function() {
 		var $this = $(this),
 				data = $this.data();
 		if (opts !== false && !data.quadcurve) {
-			data.quadcurve = new QuadCurveMenu(opts).quadcurve($this);
+			data.quadcurve = new QuadCurveMenu(opts).addQuadCurveMenu($this);
 		}
 	});
 	return $(this);

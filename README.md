@@ -10,8 +10,13 @@ QuadCurveMenu-Javascript is a javascript library for make quadcurve menu like le
 ### 1. How to 
 Set up menu item options:
 
+	/* 
+		 callback function. Called when item clicked. 
+		 target : quadCurveMenuItem's javascript dom object ( jquery dom object in jquery version). 
+	*/
 	var bind_func = function(target) {
-		alert(target.innerHTML); // callback function.  
+		alert(target.innerHTML); // javscript version
+		alert(target.html()); // jquery version
 	}
 
 	var star_item1 = {img: '../images/star.png', bindFunc: bind_func};
@@ -33,7 +38,7 @@ Then, setup the menu and options:
 	};
 
 	var target = document.getElementById('target_id');
-	new QuadCurveMenu(menu_options).quadcurve(target);
+	new QuadCurveMenu(menu_options).addQuadCurveMenu(target);
 
 
 You can also use jquery version: 
@@ -52,7 +57,7 @@ You can also use jquery version:
 		menuItemOptions: menu_item_options // same with javascript version 
 	}
 	
-	$('#target_id').quadcurve(menu_options);
+	$('#target_id').addQuadCurveMenu(menu_options);
 	
 Twitter: @MyunkyuPark
 

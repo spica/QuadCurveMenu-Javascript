@@ -40,12 +40,12 @@ Menu item 옵션을 정했으면, Menu 옵션을 설정하고 QuadCurveMenu를 �
 	var elements = document.getElementsByClassName('class_name');
 	for(var i=0;i<elements.length; i++) {
 		var ele = elements.item(i);
-		new QuadCurveMenu(menu_options).quadcurve(ele);
+		new QuadCurveMenu(menu_options).addQuadCurveMenu(ele);
 	}
 
 	// or 
 	var target = document.getElementById('specific_id');
-	new QuadCurveMenu(menu_options).quadcurve(target);
+	new QuadCurveMenu(menu_options).addQuadCurveMenu(target);
 
 해당 옵션 외에, 설정할 수 있는 값들의 기본값은 다음과 같습니다: 
 
@@ -77,9 +77,9 @@ Menu를 생성할때, javascript 버젼보다 몇 가지 사항이 더 추가됩
 	}
 
   // quadcurve menu 바인딩은 다음과 같이 하면 됩니다. 
-	$('#target_id').quadcurve(options); 
+	$('#target_id').addQuadCurveMenu(options); 
 	// or
-	$('.target_class').quadcurve(options);
+	$('.target_class').addQuadCurveMenu(options);
 
 
 Twitter: @MyunkyuPark

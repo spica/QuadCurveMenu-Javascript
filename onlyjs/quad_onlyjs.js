@@ -147,7 +147,7 @@
   		self.attributes = merge(this.defaults, options);
   	};
 
-  	this.quadcurve = function(target) {
+  	this.addQuadCurveMenu = function(target) {
   		this.menuContainer = target;
   		this.menuContainer.onclick = self.setClick;
   		this.menuContainer.style.cursor = 'pointer';
