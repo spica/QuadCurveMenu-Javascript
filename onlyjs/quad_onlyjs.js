@@ -128,11 +128,9 @@
   function QuadCurveMenu (options) {
   	var self = this; 
 
-  //	this.menuContainer;
+  	this.menuContainer;
 
-  //	this.attributes;
-
-  //	this.closeButtonContainer;
+  	this.attributes;
 
   	this.defaults = {
   		endRadius:				100,
@@ -140,8 +138,6 @@
   		expandDuration:			300,
   		closeDuration: 			300,
   		menuWholeAngle:			2 * Math.PI / 3,
-  		closeButtonImg:			'',
-  		closeButtonEndPoint: 	{x: 0, y:0},
   		expanding:				false,
   		menuItemOptions: [],
   		menuItems:	[]
@@ -155,7 +151,6 @@
   		this.menuContainer = target;
   		this.menuContainer.onclick = self.setClick;
   		this.menuContainer.style.cursor = 'pointer';
-  		//this.menuContainer.style.color = '#2B4CFF';
 
   		if (self.attributes['startPoint']['x'] == -1)
   		{
@@ -164,26 +159,6 @@
   			var startPnt = {'x' : startX, 'y': startY};
   			self.attributes['startPoint'] = startPnt;
   		}
-
-  		var closeButton = document.createElement('span');
-  		closeButton.style.position = 'absolute';
-  		closeButton.style.display = 'none';
-  		closeButton.style.opacity = 0;
-  		closeButton.style.cursor = 'pointer';
-  		closeButton.onclick = self._close;
-
-  		if (self.attributes['closeButtonImg'] == '')
-  		{
-  			closeButton.innerHTML = 'x'
-  		} else {
-  			var closeButtonImg = document.createElement('img');
-  			closeButtonImg.src = self.attributes['closeButtonImgSrc'];
-  			closeButton.appendChild(closeButtonImg);
-  		}
-  		self.closeButtonContainer = closeButton;
-
-  		//this.menuContainer.appendChild(closeButton); 이걸로하면 close가 아니라 setclick + close가 불려....-_-;;;
-  		document.body.appendChild(closeButton);
 
   		self._setMenu();
   	};
@@ -203,11 +178,6 @@
   			item.setEndPnt(endPnt);
   			self.attributes.menuItems.push(item);
   		}
-  		// close Button 수정. 
-  		self.closeButtonContainer.style.top = startY + 'px';
-  		self.closeButtonContainer.style.left = startX + 'px';
-  		self.attributes['closeButtonEndPoint']['x'] = parseInt(startX, 10) + 1.5 *  self.attributes['endRadius'] * Math.sin(self.attributes['menuWholeAngle'] / 2);		
-  		self.attributes['closeButtonEndPoint']['y'] = parseInt(startY, 10) - 1.5 *  self.attributes['endRadius'] * Math.cos(self.attributes['menuWholeAngle'] / 2);		
   	};
 
   	this.isExpanding = function() {
@@ -225,7 +195,6 @@
   				var item = self.attributes.menuItems[i];
   				item.expand(self.attributes['expandDuration']);
   			}
-  			quadCurveAnimation(self.closeButtonContainer, self.attributes['closeButtonEndPoint']['x'], self.attributes['closeButtonEndPoint']['y'], self.attributes['expandDuration'], true);
   			self.setExpanding(true);
   		}
   	};
@@ -237,16 +206,15 @@
   				var item = self.attributes.menuItems[i];
   				item.close(self.attributes['closeDuration']);
   			}
-  			quadCurveAnimation(self.closeButtonContainer, self.attributes['startPoint']['x'], self.attributes['startPoint']['y'], self.attributes['expandDuration'], false);
   			self.setExpanding(false);
   		}
   	};
 
   	this.setClick = function() {
-  		if (!self.isExpanding()) {
-  			self._expand();
-  		} else {
+  		if (self.isExpanding()) {
   			self._close();
+  		} else {
+  			self._expand();
   		}
   	};
   	this.init(options);
