@@ -1,6 +1,6 @@
-##QuadCurveMenu-Javascript Ver 0.0.1
-##Author : Myunkyu Park 
-##Created at : 2012.6.12
+####QuadCurveMenu-Javascript Ver 0.0.1
+####Author : Myunkyu Park 
+####Created at : 2012.6.12
 
 
 ### 0. Intro
@@ -22,6 +22,7 @@ Set up menu item options:
 	menu_item_options.push(star_item2);
 
 Then, setup the menu and options:
+
 	/* this is default options. */
 	var menu_options = {
 		endRadius: 100,
@@ -36,7 +37,8 @@ Then, setup the menu and options:
 
 
 You can also use jquery version: 
- /* this is default options. */
+
+  /* this is default options. */
 	var menu_options = {
 		timeOffset: 50, // ms
 		nearRadius: 80,
@@ -53,4 +55,5 @@ You can also use jquery version:
 	$('#target_id').quadcurve(menu_options);
 	
 Twitter: @MyunkyuPark
+
 Email: spica@wafflestudio.com
