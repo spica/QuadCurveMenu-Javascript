@@ -38,7 +38,7 @@ Then, setup the menu and options:
 
 You can also use jquery version: 
 
-  /* this is default options. */
+	/* this is default options. */
 	var menu_options = {
 		timeOffset: 50, // ms
 		nearRadius: 80,
