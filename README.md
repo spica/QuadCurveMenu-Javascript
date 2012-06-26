@@ -9,7 +9,7 @@ Include JS files:
 
 	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
 	<script src="lib/jquery.easing.1.3.js" type="text/javascript"></script>
-  <script src="lib/jquery-css-transform.js" type="text/javascript"></script>
+	<script src="lib/jquery-css-transform.js" type="text/javascript"></script>
 	<script src="lib/jquery-animate-css-rotate-scale.js" type="text/javascript"></script>
 	<script src="js/quad.js" type="text/javascript"></script>
 	
