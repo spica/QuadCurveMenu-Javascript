@@ -1,13 +1,13 @@
 ####QuadCurveMenu-Javascript Ver 0.0.1 
 
-### 0. 요약 
+## 요약 
 QuadCurveMenu-Javascript는 
 levey의 AwesomeMenu (https://github.com/levey/AwesomeMenu/) 를 자바스크립트 버젼으로 포팅한 것으로, jQuery 버젼과 javascript 버젼을 제공합니다. 
 jQuery 버젼은 jQuery 및 jquery-css-transform(https://github.com/zachstronaut/jquery-css-transform), jquery-animate-css-rotate-scale(https://github.com/zachstronaut/jquery-animate-css-rotate-scale), jquery.easing plugin(https://gsgd.co.uk/sandbox/jquery/easing/)을 필요로 합니다. 
 javascript 버젼은 별다른 추가 라이브러리 없이 바로 사용 하실 수 있습니다. 대신 jQuery 버젼보다 애니메이션 부분이 조금 부족합니다. 
 
 
-### 1. 사용법
+## 사용법
 #### 1) javascript 버젼 
 우선 Menu item을 생성하기 위해, item 옵션을 설정해 줍니다 : 
 
@@ -81,6 +81,9 @@ Menu를 생성할때, javascript 버젼보다 몇 가지 사항이 더 추가됩
 	// or
 	$('.target_class').addQuadCurveMenu(options);
 
+## License
+MIT License
+Copyright (C) 2012 MyunkyuPark, spica@wafflestudio.com
 
 Twitter: @MyunkyuPark
 Email: spica@wafflestudio.com 

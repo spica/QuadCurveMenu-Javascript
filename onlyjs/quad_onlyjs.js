@@ -3,6 +3,8 @@
  *  Author: Myunkyu Park (spica@wafflestudio.com)
  *  Git: https://github.com/spica/QuadCurveMenu-Javascript 
  *  Created at : 2012.06.21 
+ *  MIT Licensed
+ *  Copyright (C) 2012 MyunkyuPark, spica@wafflestudio.com`
  */
 
 (function(window, document, undefined) {

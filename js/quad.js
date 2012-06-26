@@ -4,6 +4,8 @@
  * Git : https://github.com/spica/QuadCurveMenu-Javascript 
  * Created at : 2012.06.21 
  * Dependency : jQuery, jQuery-css-transform, jQuery-animate-css-rotate-scale 
+ * MIT Licensed
+ * Copyright (C) 2012 MyunkyuPark, spica@wafflestudio.com
  */
 (function(window, document, undefined) {
 
